@@ -140,7 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Match.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Score.h" />
+    <ClInclude Include="Scoreboard.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
