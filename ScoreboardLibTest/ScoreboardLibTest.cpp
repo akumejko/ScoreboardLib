@@ -126,49 +126,47 @@ namespace ScoreboardLibTest
 		TEST_METHOD(Test_ScoreboardShouldAllowStartingAndFinishingMatches)
 		{
 			Scoreboard scoreboard;
-			Match match1("Poland", "England");
+			const std::string& match1Id = scoreboard.StartNewMatch("Poland", "England");
 
-			Assert::IsTrue(scoreboard.StartNewMatch(match1));
+			Assert::IsFalse(match1Id.empty());
 			Assert::AreEqual(1, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 
-			Match match2("Poland", "England");
-			// id is the same - should not add new game
-			Assert::IsFalse(scoreboard.StartNewMatch(match2));
+			std::string& match2Id = scoreboard.StartNewMatch("Poland", "England");
+			// same game is already on the board - should not add new game
+			Assert::IsTrue(match2Id.empty());
 			Assert::AreEqual(1, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 
-			Match match3("Brazil", "Argentina");
-			Assert::IsTrue(scoreboard.StartNewMatch(match2));
+			std::string& match3Id = scoreboard.StartNewMatch("Brazil", "Argentina");
+			Assert::IsFalse(match3Id.empty());
 			Assert::AreEqual(2, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 
-			Assert::IsTrue(scoreboard.FinishMatch(match1.GetId()));
+			Assert::IsTrue(scoreboard.FinishMatch(match1Id));
 			Assert::AreEqual(1, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 
 			// should not allow finishing the same game again
-			Assert::IsFalse(scoreboard.FinishMatch(match1.GetId()));
+			Assert::IsFalse(scoreboard.FinishMatch(match1Id));
 			Assert::AreEqual(1, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 
-			Match notStarted("France", "Uruguay");
-			Assert::IsFalse(scoreboard.FinishMatch(notStarted.GetId()));
+			// random matchId should not affect the scoreboard
+			std::string randomId = "randomId";
+			Assert::IsFalse(scoreboard.FinishMatch(randomId));
 			Assert::AreEqual(1, static_cast<int>(scoreboard.GetMatchesSummary().size()));
+
 		}
 
 		TEST_METHOD(Test_ScoreboardShouldAllowUpdatingValidScores)
 		{
 			Scoreboard scoreboard;
 
-			Match matchPolEng("Poland", "England");
-			Match matchBraArg("Brazil", "Argentina");
-			Match matchFraUru("France", "Uruguay");
-
-			scoreboard.StartNewMatch(matchPolEng);
-			scoreboard.StartNewMatch(matchBraArg);
-			scoreboard.StartNewMatch(matchFraUru);
+			const std::string& matchPolEngId = scoreboard.StartNewMatch("Poland", "England");
+			const std::string& matchBraArgId = scoreboard.StartNewMatch("Brazil", "Argentina");
+			const std::string& matchFraUruId = scoreboard.StartNewMatch("France", "Uruguay");
 
 			Assert::AreEqual(3, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchPolEng.GetId(), Score(1, 0)));
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchBraArg.GetId(), Score(2, 2)));
-			Assert::IsFalse(scoreboard.UpdateMatchScore(matchFraUru.GetId(), Score(-1, 0)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchPolEngId, Score(1, 0)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchBraArgId, Score(2, 2)));
+			Assert::IsFalse(scoreboard.UpdateMatchScore(matchFraUruId, Score(-1, 0)));
 		}
 
 		TEST_METHOD(Test_ScoreboardShouldReturnMatchlistAccordingToGoalCountAndTimestamp)
@@ -191,28 +189,29 @@ namespace ScoreboardLibTest
 				4. Argentina 3 - Australia 1
 				5. Germany 2 - France 2 */
 
-			Match matchMexCan("Mexico", "Canada");
-			Match matchSpaBra("Spain", "Brazil");
-			Match matchGerFra("Germany", "France");
-			Match matchUruIta("Uruguay", "Italy");
-			Match matchArgAus("Argentina", "Australia");
-
-
-			Assert::IsTrue(scoreboard.StartNewMatch(matchMexCan));
-			Assert::IsTrue(scoreboard.StartNewMatch(matchSpaBra));
-			Assert::IsTrue(scoreboard.StartNewMatch(matchGerFra));
-			Assert::IsTrue(scoreboard.StartNewMatch(matchUruIta));
-			Assert::IsTrue(scoreboard.StartNewMatch(matchArgAus));
+			const std::string& matchMexCanId = scoreboard.StartNewMatch("Mexico", "Canada");
+			const std::string& matchSpaBraId = scoreboard.StartNewMatch("Spain", "Brazil");
+			const std::string& matchGerFraId = scoreboard.StartNewMatch("Germany", "France");
+			const std::string& matchUruItaId = scoreboard.StartNewMatch("Uruguay", "Italy");
+			const std::string& matchArgAusId = scoreboard.StartNewMatch("Argentina", "Australia");
 
 			Assert::AreEqual(5, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchMexCan.GetId(), Score(0, 5)));
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchSpaBra.GetId(), Score(10, 2)));
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchGerFra.GetId(), Score(2, 2)));
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchUruIta.GetId(), Score(6, 6)));
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchArgAus.GetId(), Score(3, 1)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchMexCanId, Score(0, 5)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchSpaBraId, Score(10, 2)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchGerFraId, Score(2, 2)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchUruItaId, Score(6, 6)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchArgAusId, Score(3, 1)));
 
 			std::list<Match> expectedList;
+			Match matchUruIta, matchSpaBra, matchMexCan, matchArgAus, matchGerFra;
+			matchUruIta.SetScore(Score(6, 6));
+			matchSpaBra.SetScore(Score(10, 2));
+			matchMexCan.SetScore(Score(2, 2));
+			matchArgAus.SetScore(Score(3, 1));
+			matchGerFra.SetScore(Score(2, 2));
+
+			
 			expectedList.push_back(matchUruIta);
 			expectedList.push_back(matchSpaBra);
 			expectedList.push_back(matchMexCan);
@@ -222,23 +221,25 @@ namespace ScoreboardLibTest
 			Assert::IsTrue(expectedList == scoreboard.GetMatchesSummary());
 
 			// finished match should be removed from summary
-			Assert::IsTrue(scoreboard.FinishMatch(matchGerFra.GetId()));
+			Assert::IsTrue(scoreboard.FinishMatch(matchGerFraId));
 			Assert::AreEqual(4, static_cast<int>(scoreboard.GetMatchesSummary().size()));
 			
 			expectedList.remove(matchGerFra);
 			Assert::IsTrue(expectedList == scoreboard.GetMatchesSummary());
 
 			// updated score should affect the order
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchSpaBra.GetId(), Score(10, 3)));
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchSpaBraId, Score(10, 3)));
 			expectedList.remove(matchSpaBra);
 			expectedList.push_front(matchSpaBra);
 
 			Assert::IsTrue(expectedList == scoreboard.GetMatchesSummary());
 
 			// new game should affect the order
+			const std::string& matchHunTurId = scoreboard.StartNewMatch("Hungary", "Turkey");
+			Assert::IsTrue(scoreboard.UpdateMatchScore(matchHunTurId, Score(3, 1)));
+
 			Match matchHunTur("Hungary", "Turkey");
-			Assert::IsTrue(scoreboard.StartNewMatch(matchHunTur));
-			Assert::IsTrue(scoreboard.UpdateMatchScore(matchHunTur.GetId(), Score(3, 1)));
+			matchHunTur.SetScore(Score(3, 1));
 
 			expectedList.clear();
 			expectedList.push_back(matchSpaBra);
