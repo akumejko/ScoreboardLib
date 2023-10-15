@@ -168,7 +168,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ScoreboardLib\ScoreboardLib.vcxproj">
+    <ProjectReference Include="..\ScoreboardLib.vcxproj">
       <Project>{d03a7492-0c99-4f43-b381-64704812a4c9}</Project>
     </ProjectReference>
   </ItemGroup>
