@@ -46,7 +46,47 @@ namespace ScoreboardLibTest
 			Assert::IsFalse(match.GetId().empty());
 			Assert::IsFalse(match.GetAwayTeamName().empty());
 			Assert::IsFalse(match.GetHomeTeamName().empty());
-			Assert::AreEqual((time_t)0, match.GetTimestamp());
+			bool isTimestampInitialized = std::chrono::milliseconds(0) == match.GetTimestamp();
+			Assert::IsTrue(isTimestampInitialized);
+		}
+
+		TEST_METHOD(Test_MatchShouldHaveDifferentTimestampBasedOnStart)
+		{
+			Match match1, match2;
+
+			match1.Start();
+			match2.Start();
+
+			Assert::IsTrue(match2.GetTimestamp() > match1.GetTimestamp());
+		}
+
+		TEST_METHOD(Test_MatchShouldHaveDifferentIdBasedOnTeamNames)
+		{
+			Match match1("Poland", "England");
+			Match match2("Brazil", "Argentina");
+
+			Assert::AreEqual(std::string("Poland"), match1.GetHomeTeamName());
+			Assert::AreEqual(std::string("England"), match1.GetAwayTeamName());
+
+			Assert::AreNotEqual(match1.GetId(), match2.GetId());
+		}
+
+		TEST_METHOD(Test_MatchShouldNotAllowEmptyTeamNames)
+		{
+			Match match1("", "England");
+			Assert::IsFalse(match1.GetHomeTeamName().empty());
+
+			Match match2("Brazil", "");
+			Assert::IsFalse(match2.SetHomeTeamName(""));
+			Assert::AreEqual(std::string("Brazil"), match2.GetHomeTeamName());
+		}
+
+		TEST_METHOD(Test_MatchAllowSettingValidScore)
+		{
+			Match match;
+
+			match.SetScore(Score(1, 4));
+			Assert::AreEqual(5, match.GetGoalCount());
 		}
 	};
 
