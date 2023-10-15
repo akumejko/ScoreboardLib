@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CppUnitTest.h"
+#include <windows.h>
 
 #include "../Scoreboard.h"
 
@@ -38,11 +39,14 @@ namespace ScoreboardLibTest
 	{
 	public:
 
-		TEST_METHOD(Test_MatchShouldInitializeWithId)
+		TEST_METHOD(Test_MatchShouldNotInitializeWithEmptyValues)
 		{
 			Match match;
 
 			Assert::IsFalse(match.GetId().empty());
+			Assert::IsFalse(match.GetAwayTeamName().empty());
+			Assert::IsFalse(match.GetHomeTeamName().empty());
+			Assert::AreEqual((time_t)0, match.GetTimestamp());
 		}
 	};
 
