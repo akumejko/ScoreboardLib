@@ -43,18 +43,16 @@ namespace ScoreboardLibTest
 	{
 	public:
 
-		TEST_METHOD(Test_MatchShouldNotInitializeWithEmptyValues)
+		TEST_METHOD(Test_MatchShouldNotBeValidWithoutTeamNames)
 		{
 			Match match;
-
-			Assert::IsFalse(match.GetId().empty());
-			Assert::IsFalse(match.GetAwayTeamName().empty());
-			Assert::IsFalse(match.GetHomeTeamName().empty());
-			bool isTimestampInitialized = std::chrono::milliseconds(0) == match.GetTimestamp();
-			Assert::IsTrue(isTimestampInitialized);
-
-			// still the match is not valid
 			Assert::IsFalse(match.IsValid());
+
+			Match match2("", "England");
+			Assert::IsFalse(match2.IsValid());
+
+			Match match3("England", "");
+			Assert::IsFalse(match3.IsValid());
 		}
 
 		TEST_METHOD(Test_MatchShouldHaveDifferentTimestampBasedOnStart)
@@ -62,6 +60,7 @@ namespace ScoreboardLibTest
 			Match match1, match2;
 
 			match1.Start();
+			Sleep(50); // this should be ideally replace with time mocking
 			match2.Start();
 
 			Assert::IsTrue(match2.GetTimestamp() > match1.GetTimestamp());

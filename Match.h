@@ -7,21 +7,28 @@
 class Match
 {
 public:
-	Match() {}
-	Match(std::string, std::string) {}
+	Match();
+	Match(std::string homeTeamName, std::string awayTeamName);
 
-	const std::string GetId() const { return std::string(); }
-	const std::string GetHomeTeamName() const { return std::string(); }
-	const std::string GetAwayTeamName() const { return std::string(); }
-	const Score GetScore() const { return Score(); }
-	const std::chrono::milliseconds GetTimestamp() const { return std::chrono::milliseconds(0); }
-	const int GetGoalCount() { return 0; }
-	const bool IsValid() const { return false; }
+	const std::string& GetId() const;
+	const std::string& GetHomeTeamName() const;
+	const std::string& GetAwayTeamName() const;
+	const Score& GetScore() const;
+	const std::chrono::milliseconds GetTimestamp() const;
+	const int GetGoalCount();
+	bool IsValid() const;
 
-	void Start() {};
-	bool SetHomeTeamName(std::string) { return false; }
-	bool SetAwayTeamName(std::string) { return false; }
-	bool SetScore(const Score) { return false; }
+	void Start();
+	bool SetHomeTeamName(std::string teamName);
+	bool SetAwayTeamName(std::string teamName);
+	bool SetScore(const Score score);
 
-	bool operator==(const Match&) const { return false; }
+	bool operator==(const Match& other) const;
+
+private:
+	std::string _homeTeamName;
+	std::string _awayTeamName;
+	std::string _id;
+	Score _score;
+	std::chrono::milliseconds _timestamp;
 };
