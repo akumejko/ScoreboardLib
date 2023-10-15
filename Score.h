@@ -3,14 +3,18 @@
 class Score
 {
 public:
-	Score() {}
-	Score(int, int) {}
+	Score();
+	Score(int homeGoals, int awayGoals);
 
-	const int GetHomeGoals() { return 0; }
-	const int GetAwayGoals() { return 0; }
+	const int GetHomeGoals() const;
+	const int GetAwayGoals() const;
 
-	bool SetHomeGoals(const int) { return false; }
-	bool SetAwayGoals(const int) { return false; }
+	bool SetHomeGoals(const int goals);
+	bool SetAwayGoals(const int goals);
 
-	const bool IsValid() const { return false; }
+	bool IsValid() const;
+	
+private:
+	int _homeGoals;
+	int _awayGoals;
 };
