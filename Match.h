@@ -22,4 +22,6 @@ public:
 	bool SetHomeTeamName(std::string) { return false; }
 	bool SetAwayTeamName(std::string) { return false; }
 	bool SetScore(const Score) { return false; }
+
+	bool operator==(const Match&) const { return false; }
 };
