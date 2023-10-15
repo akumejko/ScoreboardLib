@@ -11,4 +11,6 @@ public:
 
 	bool SetHomeGoals(const int) { return false; }
 	bool SetAwayGoals(const int) { return false; }
+
+	const bool IsValid() const { return false; }
 };
