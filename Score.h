@@ -4,6 +4,7 @@ class Score
 {
 public:
 	Score() {}
+	Score(int, int) {}
 
 	const int GetHomeGoals() { return 0; }
 	const int GetAwayGoals() { return 0; }
