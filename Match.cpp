@@ -44,7 +44,7 @@ const std::chrono::milliseconds Match::GetTimestamp() const
 	return _timestamp;
 }
 
-const int Match::GetGoalCount()
+const int Match::GetGoalCount() const
 {
 	return _score.GetHomeGoals() + _score.GetAwayGoals();
 }

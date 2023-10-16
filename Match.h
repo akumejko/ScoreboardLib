@@ -15,7 +15,7 @@ public:
 	const std::string& GetAwayTeamName() const;
 	const Score& GetScore() const;
 	const std::chrono::milliseconds GetTimestamp() const;
-	const int GetGoalCount();
+	const int GetGoalCount() const;
 	bool IsValid() const;
 
 	void Start();

@@ -189,9 +189,13 @@ namespace ScoreboardLibTest
 				5. Germany 2 - France 2 */
 
 			const std::string& matchMexCanId = scoreboard.StartNewMatch("Mexico", "Canada");
+			Sleep(10);
 			const std::string& matchSpaBraId = scoreboard.StartNewMatch("Spain", "Brazil");
+			Sleep(10);
 			const std::string& matchGerFraId = scoreboard.StartNewMatch("Germany", "France");
+			Sleep(10);
 			const std::string& matchUruItaId = scoreboard.StartNewMatch("Uruguay", "Italy");
+			Sleep(10);
 			const std::string& matchArgAusId = scoreboard.StartNewMatch("Argentina", "Australia");
 
 			Assert::AreEqual(5, static_cast<int>(scoreboard.GetMatchesSummary().size()));
@@ -203,20 +207,25 @@ namespace ScoreboardLibTest
 			Assert::IsTrue(scoreboard.UpdateMatchScore(matchArgAusId, Score(3, 1)));
 
 			std::list<Match> expectedList;
-			Match matchUruIta, matchSpaBra, matchMexCan, matchArgAus, matchGerFra;
+			Match matchUruIta("Uruguay", "Italy");
+			Match matchSpaBra("Spain", "Brazil");
+			Match matchMexCan("Mexico", "Canada");
+			Match matchArgAus("Argentina", "Australia");
+			Match matchGerFra("Germany", "France");
+
 			matchUruIta.SetScore(Score(6, 6));
 			matchSpaBra.SetScore(Score(10, 2));
 			matchMexCan.SetScore(Score(2, 2));
 			matchArgAus.SetScore(Score(3, 1));
 			matchGerFra.SetScore(Score(2, 2));
-
-			
+	
 			expectedList.push_back(matchUruIta);
 			expectedList.push_back(matchSpaBra);
 			expectedList.push_back(matchMexCan);
 			expectedList.push_back(matchArgAus);
 			expectedList.push_back(matchGerFra);
 
+			auto summary = scoreboard.GetMatchesSummary();
 			Assert::IsTrue(expectedList == scoreboard.GetMatchesSummary());
 
 			// finished match should be removed from summary
