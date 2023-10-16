@@ -26,6 +26,9 @@ public:
 	bool operator==(const Match& other) const;
 
 private:
+	std::string trim(const std::string& str);
+
+private:
 	std::string _homeTeamName;
 	std::string _awayTeamName;
 	std::string _id;

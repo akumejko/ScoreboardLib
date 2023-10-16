@@ -11,12 +11,15 @@ Match::Match()
 }
 
 Match::Match(std::string homeTeamName, std::string awayTeamName)
-	: _homeTeamName(homeTeamName)
-	, _awayTeamName(awayTeamName)
-	, _id(homeTeamName+awayTeamName)
-	, _timestamp(0)
+	: _timestamp(0)
 {
+	SetHomeTeamName(homeTeamName);
+	SetAwayTeamName(awayTeamName);
 
+	if (IsValid())
+	{
+		_id = GetHomeTeamName() + GetAwayTeamName();
+	}
 }
 
 const std::string& Match::GetId() const
@@ -66,7 +69,7 @@ bool Match::SetHomeTeamName(std::string teamName)
 {
 	if (teamName.empty()) return false;
 
-	_homeTeamName = teamName;
+	_homeTeamName = trim(teamName);
 	return true;
 }
 
@@ -74,7 +77,7 @@ bool Match::SetAwayTeamName(std::string teamName)
 {
 	if (teamName.empty()) return false;
 
-	_awayTeamName = teamName;
+	_awayTeamName = trim(teamName);
 	return true;
 }
 
@@ -92,4 +95,17 @@ bool Match::operator==(const Match& other) const
 {
 	return _homeTeamName == other._homeTeamName &&
 		_awayTeamName == other._awayTeamName;
+}
+
+std::string Match::trim(const std::string& str)
+{
+	std::string whitespace = " \t";
+	
+	auto strBegin = str.find_first_not_of(whitespace);
+	if (strBegin == std::string::npos) return "";
+
+	auto strEnd = str.find_last_not_of(whitespace);
+	auto strRange = strEnd - strBegin + 1;
+
+	return str.substr(strBegin, strRange);
 }

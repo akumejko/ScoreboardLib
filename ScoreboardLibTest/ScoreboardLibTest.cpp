@@ -97,6 +97,10 @@ namespace ScoreboardLibTest
 
 			Assert::IsTrue(match2.SetAwayTeamName("Argentina"));
 			Assert::IsTrue(match2.IsValid());
+
+			Match match3("  Brazil  ", " ");
+			Assert::IsFalse(match3.IsValid());
+			Assert::AreEqual(std::string("Brazil"), match3.GetHomeTeamName());
 		}
 
 		TEST_METHOD(Test_MatchAllowSettingValidScore)
